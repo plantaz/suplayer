@@ -3,15 +3,21 @@ import { input } from "./style";
 
 export type InputContainerProps = {
   type: HTMLInputElement["type"];
-  upperCase?: boolean;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  children?: React.ReactNode;
 } & VariantProps<typeof input>;
 
 export const InputContainer = ({
-  children,
   type,
   placeholder,
+  onChange,
 }: InputContainerProps): JSX.Element => {
-  return <input type={type} placeholder={placeholder} className={input()} />;
+  return (
+    <input
+      type={type}
+      placeholder={placeholder}
+      className={input()}
+      onChange={onChange}
+    />
+  );
 };
