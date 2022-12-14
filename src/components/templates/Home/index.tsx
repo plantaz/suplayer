@@ -1,5 +1,5 @@
 import { Logo } from "@atoms";
-import { CalculatorForm } from "@organisms";
+import { CalculatorForm, ShipsInfinityScroll } from "@organisms";
 
 import { useStarShips } from "./hooks/useStarShips";
 import { homeStyle } from "./style";
@@ -23,6 +23,7 @@ export const Home = (): JSX.Element => {
           setValueToCalculate(Number(e.target.value));
         }}
       />
+      <ShipsInfinityScroll shipsInfos={starShipsCalculation} />
     </div>
   );
 };

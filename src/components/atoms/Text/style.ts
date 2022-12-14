@@ -1,6 +1,6 @@
 import { cva } from "class-variance-authority";
 
-export const text = cva([], {
+export const text = cva(["font-bold"], {
   variants: {
     color: {
       primary: "text-white",
@@ -9,7 +9,7 @@ export const text = cva([], {
       small: "text-sm",
       medium: "text-base",
       large: "text-lg",
-      bigger: "text-xl",
+      bigger: "text-2xl",
     },
   },
 

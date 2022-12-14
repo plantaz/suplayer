@@ -91,14 +91,19 @@ export const useStarShips = () => {
   };
 
   const starShipsCalculation = useMemo(() => {
-    const starShipsCalculation = starShips.map(({ results }) => {
-      return results.map((starShip) => {
+    const starShipsCalculation: {
+      name: string;
+      stops: number;
+    }[] = [];
+    starShips.forEach(({ results }) => {
+      return results.forEach((starShip) => {
         const { MGLT, consumables, name } = starShip;
         const stops = handleCalculateStops(valueToCalculate, MGLT, consumables);
-        return {
+
+        starShipsCalculation.push({
           name,
           stops,
-        };
+        });
       });
     });
 
