@@ -38,3 +38,20 @@ body {
   background-color: #031010;
   font-family: "stellarregular";
 }
+
+/* Remove the default styling from the input and textarea elements */
+textarea:focus,
+input:focus {
+  outline: none;
+}
+
+/* Remove the default arrow from the number input */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

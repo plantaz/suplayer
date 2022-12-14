@@ -1,4 +1,5 @@
 import { VariantProps } from "class-variance-authority";
+
 import { text } from "./style";
 
 export type TextProps = {
