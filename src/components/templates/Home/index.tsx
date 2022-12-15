@@ -12,6 +12,8 @@ export const Home = (): JSX.Element => {
     getShips,
     starShipsCalculation,
     setValueToCalculate,
+    hasMore,
+    getMoreShips,
   } = useStarShips();
 
   return (
@@ -23,7 +25,11 @@ export const Home = (): JSX.Element => {
           setValueToCalculate(Number(e.target.value));
         }}
       />
-      <ShipsInfinityScroll shipsInfos={starShipsCalculation} />
+      <ShipsInfinityScroll
+        shipsInfos={starShipsCalculation}
+        hasMore={hasMore}
+        getMoreShips={getMoreShips}
+      />
     </div>
   );
 };

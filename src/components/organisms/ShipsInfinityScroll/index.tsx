@@ -7,17 +7,21 @@ export type ShipsInfinityScrollProps = {
     name: string;
     stops: number | string;
   }[];
+  hasMore: boolean;
+  getMoreShips: () => void;
 };
 
 export const ShipsInfinityScroll = ({
   shipsInfos,
+  hasMore,
+  getMoreShips,
 }: ShipsInfinityScrollProps): JSX.Element => {
   return (
     <InfiniteScroll
       dataLength={shipsInfos.length}
-      hasMore={true}
+      hasMore={hasMore}
       loader={<h4>Loading...</h4>}
-      next={() => {}}>
+      next={getMoreShips}>
       <div className='grip gap-4'>
         {shipsInfos.map((shipInfo) => (
           <ShipStopsInfos

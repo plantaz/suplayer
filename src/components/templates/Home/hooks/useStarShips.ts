@@ -44,10 +44,16 @@ export const useStarShips = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | null>(null);
 
+  const hasMore = useMemo(() => {
+    return starShips[starShips.length - 1]?.next !== null;
+  }, [starShips]);
+
   const getShips = async () => {
+    const url = "/starships";
+
     try {
       setLoading(true);
-      const response = await http.get<ResponseStarShips>("/starships");
+      const response = await http.get<ResponseStarShips>(url);
       setStarShips([response.data]);
     } catch (error: Error | any) {
       setError(error);
@@ -56,7 +62,25 @@ export const useStarShips = () => {
     }
   };
 
-  const getMoreShips = async (url: string) => {};
+  const getMoreShips = async () => {
+    if (hasMore) {
+      const lastItem = starShips[starShips.length - 1]
+        ? starShips.length - 1
+        : 0;
+      const page = starShips[lastItem]?.next?.split("=")[1];
+      const url = `/starships/?page=${page}`;
+
+      try {
+        setLoading(true);
+        const response = await http.get<ResponseStarShips>(url);
+        setStarShips([...starShips, response.data]);
+      } catch (error: Error | any) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleCalculateStops = (
@@ -116,6 +140,8 @@ export const useStarShips = () => {
     getShips,
     loading,
     error,
+    getMoreShips,
+    hasMore,
     setValueToCalculate,
   };
 };
