@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "test:e2e:run": "next test",
     "lint": "next lint",
     "sb": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
