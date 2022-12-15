@@ -1,4 +1,5 @@
 import InfiniteScroll from "react-infinite-scroll-component";
+import ReactLoading from "react-loading";
 
 import { ShipStopsInfos } from "@molecules";
 
@@ -20,9 +21,9 @@ export const ShipsInfinityScroll = ({
     <InfiniteScroll
       dataLength={shipsInfos.length}
       hasMore={hasMore}
-      loader={<h4>Loading...</h4>}
+      loader={<ReactLoading type='spin' className='mx-auto mt-10' />}
       next={getMoreShips}>
-      <div className='grip gap-4'>
+      <div className='grid gap-10 md:grid-cols-3 lg:grid-cols-4'>
         {shipsInfos.map((shipInfo) => (
           <ShipStopsInfos
             key={shipInfo.name}

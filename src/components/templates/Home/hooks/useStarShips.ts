@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { http } from "@libs";
 
@@ -36,13 +36,12 @@ type Units =
   | "month"
   | "months"
   | "year"
-  | "years"
-  | "unknown";
+  | "years";
 
 export const useStarShips = () => {
   const [valueToCalculate, setValueToCalculate] = useState<number>(0);
-  const [starShips, setStarShips] = useState<ResponseStarShips[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+  const [starShips, setStarShips] = useState<ResponseStarShips[]>([]);
   const [error, setError] = useState<Error | null>(null);
 
   const hasMore = useMemo(() => {
@@ -50,16 +49,18 @@ export const useStarShips = () => {
   }, [starShips]);
 
   const getShips = async () => {
+    if (valueToCalculate < 0)
+      return setError(Error("The value must be greater than 0"));
+
     const url = "/starships";
 
     try {
       setLoading(true);
       const response = await http.get<ResponseStarShips>(url);
       setStarShips([response.data]);
+      setLoading(false);
     } catch (error: Error | any) {
       setError(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -72,32 +73,31 @@ export const useStarShips = () => {
       const url = `/starships/?page=${page}`;
 
       try {
-        setLoading(true);
         const response = await http.get<ResponseStarShips>(url);
         setStarShips([...starShips, response.data]);
       } catch (error: Error | any) {
         setError(error);
-      } finally {
-        setLoading(false);
       }
     }
   };
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleCalculateStops = (
-    distance: string | number,
-    MGLT: string | number | "unknown",
-    consumables: string | "unknown", // 2 days, 1 week, 1 month, 1 year
-  ) => {
-    if (MGLT === "unknown" || consumables === "unknown") return "unknown";
+  const handleCalculateStops = useCallback(
+    (
+      distance: string | number,
+      MGLT: string | number | "unknown",
+      consumables: string | "unknown", // 2 days, 1 week, 1 month, 1 year
+    ) => {
+      if (MGLT === "unknown" || consumables === "unknown") return "unknown";
 
-    const MGLTNumber = Number(MGLT);
-    const numberHoursToTravel = Number(distance) / MGLTNumber / 24; // Convert hours to days;
-    const consumablesNumber = handleConsumables(consumables);
+      const MGLTNumber = Number(MGLT);
+      const numberHoursToTravel = Number(distance) / MGLTNumber / 24; // Convert hours to days;
+      const consumablesNumber = handleConsumables(consumables);
 
-    const stops = Math.floor(numberHoursToTravel / consumablesNumber);
-    return stops;
-  };
+      const stops = Math.floor(numberHoursToTravel / consumablesNumber);
+      return stops;
+    },
+    [],
+  );
 
   const handleConsumables = (consumables: string) => {
     const consumablesArray = consumables.split(" ");
@@ -126,12 +126,7 @@ export const useStarShips = () => {
     starShips.forEach(({ results }) => {
       return results.forEach((starShip) => {
         const { MGLT, consumables, name } = starShip;
-        const stops = handleCalculateStops(
-          valueToCalculate,
-          MGLT,
-          consumables,
-          name,
-        );
+        const stops = handleCalculateStops(valueToCalculate, MGLT, consumables);
 
         starShipsCalculation.push({
           name,
@@ -147,10 +142,11 @@ export const useStarShips = () => {
     starShips,
     starShipsCalculation,
     getShips,
-    loading,
     error,
+    setError,
     getMoreShips,
     hasMore,
     setValueToCalculate,
+    loading,
   };
 };
