@@ -6,7 +6,6 @@ import { homeStyle } from "./style";
 
 export const Home = (): JSX.Element => {
   const {
-    starShips,
     error,
     loading,
     getShips,

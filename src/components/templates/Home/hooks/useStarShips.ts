@@ -36,7 +36,8 @@ type Units =
   | "month"
   | "months"
   | "year"
-  | "years";
+  | "years"
+  | "unknown";
 
 export const useStarShips = () => {
   const [valueToCalculate, setValueToCalculate] = useState<number>(0);
@@ -85,14 +86,16 @@ export const useStarShips = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const handleCalculateStops = (
     distance: string | number,
-    MGLT: string | number,
-    consumables: string, // 2 days, 1 week, 1 month, 1 year
+    MGLT: string | number | "unknown",
+    consumables: string | "unknown", // 2 days, 1 week, 1 month, 1 year
   ) => {
+    if (MGLT === "unknown" || consumables === "unknown") return "unknown";
+
     const MGLTNumber = Number(MGLT);
     const numberHoursToTravel = Number(distance) / MGLTNumber / 24; // Convert hours to days;
     const consumablesNumber = handleConsumables(consumables);
-    const stops = Math.floor(numberHoursToTravel / consumablesNumber);
 
+    const stops = Math.floor(numberHoursToTravel / consumablesNumber);
     return stops;
   };
 
@@ -117,12 +120,18 @@ export const useStarShips = () => {
   const starShipsCalculation = useMemo(() => {
     const starShipsCalculation: {
       name: string;
-      stops: number;
+      stops: number | "unknown";
     }[] = [];
+
     starShips.forEach(({ results }) => {
       return results.forEach((starShip) => {
         const { MGLT, consumables, name } = starShip;
-        const stops = handleCalculateStops(valueToCalculate, MGLT, consumables);
+        const stops = handleCalculateStops(
+          valueToCalculate,
+          MGLT,
+          consumables,
+          name,
+        );
 
         starShipsCalculation.push({
           name,
